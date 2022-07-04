@@ -462,6 +462,10 @@ pub fn prepare_zig_linker(target: &str) -> Result<(PathBuf, PathBuf)> {
     let zig_cxx = format!("zigcxx-{}.{}", target, file_ext);
     let cc_args = "-g"; // prevent stripping
     let mut cc_args = match triple.operating_system {
+        OperatingSystem::Linux if arch == "armv7" => format!(
+            "-target arm-linux-{}{} -march=cortex_a72 {}",
+            target_env, abi_suffix, cc_args,
+        ),
         OperatingSystem::Linux => format!(
             "-target {}-linux-{}{} {}",
             arch, target_env, abi_suffix, cc_args,
